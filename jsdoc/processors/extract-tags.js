@@ -16,8 +16,18 @@ module.exports = function extractTagsProcessor(log, parseTagsProcessor, createDo
     $process: function(docs) {
       var tagExtractor = createTagExtractor(parseTagsProcessor.tagDefinitions, this.defaultTagTransforms);
       docs.forEach(function(doc) {
-        log.debug(createDocMessage('extracting tags', doc));
-        tagExtractor(doc);
+        if (
+          doc &&
+          doc.fileInfo &&
+          doc.fileInfo.fileReader &&
+          (
+            doc.fileInfo.fileReader === 'jsdocFileReader' ||
+            doc.fileInfo.fileReader === 'ngdocFileReader'
+          )
+        ) {
+          log.debug(createDocMessage('extracting tags', doc));
+          tagExtractor(doc);
+        }
       });
     }
   };
